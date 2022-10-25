@@ -45,6 +45,23 @@ export const useFeedStore = defineStore({
         },
         async registerNewSource(url){
 
+            try {
+                const response = await fetch(url);
+                let text = await response.text();
+                const domParser = new DOMParser();
+                let doc = domParser.parseFromString(text, "text/xml");
+
+                const title = doc.querySelector("channel title, feed title");
+
+                const source = {
+                    id: crypto.randomUUID(),
+                    name: title.textContent(),
+                    url,
+                };
+                this.source.push(source)
+            } catch (error) {
+                console.log(error);
+            }
         }
     }
 });
